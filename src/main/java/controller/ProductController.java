@@ -1,7 +1,6 @@
 package controller;
 
 import entity.Product;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,44 +16,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-
-    @GetMapping("/")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getALlProducts();
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        try {
-            Product product = productService.getProductById(id)
-                    .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
-            return ResponseEntity.ok(product);
-        } catch (ProductNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    @GetMapping("/{flavour}")
-    public ResponseEntity<List<Product>> getProductsByFlavour(@RequestParam String flavour) {
-        List<Product> products = productService.getProductsByFlavor(flavour);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/{price}")
-    public ResponseEntity<List<Product>> getProductByPrice(@RequestParam Double price) {
-        List<Product> products = productService.getProductByPrice(price);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/{keyword}")
-    public ResponseEntity<List<Product>> getByKeywordContainingIgnoreCase(@RequestParam String keyword) {
-        List<Product> products = productService.getByKeywordContainingIgnoreCase(keyword);
-        return ResponseEntity.ok(products);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         try{
@@ -63,6 +24,12 @@ public class ProductController {
         }catch(Exception ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.getALlProducts();
+        return ResponseEntity.ok(products);
     }
 
     @PutMapping("/update/{id}")
@@ -83,10 +50,41 @@ public class ProductController {
             productService.deleteProduct(id);
             return ResponseEntity.noContent().build();
         } catch (ProductNotFoundException ex){
-        return ResponseEntity.notFound().build();
-    } catch(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.notFound().build();
+        } catch(Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+        try {
+            Product product = productService.getProductById(id)
+                    .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+            return ResponseEntity.ok(product);
+        } catch (ProductNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{flavor}")
+    public ResponseEntity<List<Product>> getProductsByFlavor(@RequestParam String flavor) {
+        List<Product> products = productService.getProductsByFlavor(flavor);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{price}")
+    public ResponseEntity<List<Product>> getProductByPrice(@RequestParam Double price) {
+        List<Product> products = productService.getProductByPrice(price);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/{keyword}")
+    public ResponseEntity<List<Product>> getByKeywordContainingIgnoreCase(@RequestParam String keyword) {
+        List<Product> products = productService.getByKeywordContainingIgnoreCase(keyword);
+        return ResponseEntity.ok(products);
     }
 
 }
