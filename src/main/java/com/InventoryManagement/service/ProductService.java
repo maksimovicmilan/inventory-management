@@ -1,25 +1,23 @@
-package service;
+package com.InventoryManagement.service;
 
-import entity.Product;
+import com.InventoryManagement.repository.ProductRepository;
+import com.InventoryManagement.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import repository.ProductRepository;
+
 import java.util.*;
 
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
-
     @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private ProductRepository productRepository;
 
-    @CachePut(cacheNames = "products", key = "#id")
+
+//    @CachePut(cacheNames = "products", key = "#id")
     public Product createProduct(Product product){
         if(product.getName() == null ||product.getName().isEmpty()) {
             throw new IllegalArgumentException("Product name cannot be empty");
@@ -59,15 +57,15 @@ public class ProductService {
     }
 
     public List<Product>getProductsByFlavor(String flavor){
-        return productRepository.findByFlavor(flavor);
+        return productRepository.findByFlavour(flavor);
     }
 
     public List<Product>getProductByPrice(Double price){
         return productRepository.findByPrice(price);
     }
 
-    public List<Product>getByKeywordContainingIgnoreCase(String keyword){
-        return productRepository.findByKeywordContainingIgnoreCase(keyword);
-    }
+//    public List<Product>getByKeywordContainingIgnoreCase(String keyword){
+//        return productRepository.findByKeywordContainingIgnoreCase(keyword);
+//    }
 
 }

@@ -1,13 +1,10 @@
-package entity;
+package com.InventoryManagement.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -15,16 +12,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
     private double price;
+    private Boolean eatable;
     private String flavour;
+    private String unitOfMeasurement;
     private long quantity;
-
-    @ManyToMany(mappedBy = "products")
-    private Set<Order> orders = new HashSet<>();
 }

@@ -1,11 +1,11 @@
-package controller;
+package com.InventoryManagement.controller;
 
-import entity.Product;
+import com.InventoryManagement.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.ProductService;
+import com.InventoryManagement.service.ProductService;
 
 import java.util.List;
 
@@ -44,30 +44,30 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
-        try {
-            productService.deleteProduct(id);
-            return ResponseEntity.noContent().build();
-        } catch (ProductNotFoundException ex){
-            return ResponseEntity.notFound().build();
-        } catch(Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
+//        try {
+//            productService.deleteProduct(id);
+//            return ResponseEntity.noContent().build();
+//        } catch (ProductNotFoundException ex){
+//            return ResponseEntity.notFound().build();
+//        } catch(Exception ex) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        try {
-            Product product = productService.getProductById(id)
-                    .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
-            return ResponseEntity.ok(product);
-        } catch (ProductNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+//        try {
+//            Product product = productService.getProductById(id)
+//                    .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+//            return ResponseEntity.ok(product);
+//        } catch (ProductNotFoundException ex) {
+//            return ResponseEntity.notFound().build();
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     @GetMapping("/{flavor}")
     public ResponseEntity<List<Product>> getProductsByFlavor(@RequestParam String flavor) {
@@ -81,10 +81,10 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{keyword}")
-    public ResponseEntity<List<Product>> getByKeywordContainingIgnoreCase(@RequestParam String keyword) {
-        List<Product> products = productService.getByKeywordContainingIgnoreCase(keyword);
-        return ResponseEntity.ok(products);
-    }
+//    @GetMapping("/{keyword}")
+//    public ResponseEntity<List<Product>> getByKeywordContainingIgnoreCase(@RequestParam String keyword) {
+//        List<Product> products = productService.getByKeywordContainingIgnoreCase(keyword);
+//        return ResponseEntity.ok(products);
+//    }
 
 }

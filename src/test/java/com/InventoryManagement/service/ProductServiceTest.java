@@ -1,13 +1,13 @@
-package com.InventoryManagement.inventorymanagement.service;
+package com.InventoryManagement.service;
 
-import entity.Product;
+import com.InventoryManagement.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import repository.ProductRepository;
-import service.ProductService;
+import com.InventoryManagement.repository.ProductRepository;
+
 import java.util.Collections;
 import java.util.List;
 

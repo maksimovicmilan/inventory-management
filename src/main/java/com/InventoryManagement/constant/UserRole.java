@@ -1,4 +1,4 @@
-package com.InventoryManagement.inventorymanagement.Enum;
+package com.InventoryManagement.constant;
 
 public enum UserRole {
 

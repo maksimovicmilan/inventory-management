@@ -1,13 +1,19 @@
-package controller;
+package com.InventoryManagement.controller;
 
-import com.InventoryManagement.inventorymanagement.Enum.OrderStatus;
-import entity.Order;
+import com.InventoryManagement.entity.Customer;
+import com.InventoryManagement.entity.dto.OrderDto;
+import com.InventoryManagement.exception.BusinessException;
+import com.InventoryManagement.constant.OrderStatus;
+import com.InventoryManagement.service.OrderService;
+import com.InventoryManagement.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.OrderService;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,14 +25,17 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<Order> createOrder(@RequestBody Order order){
-        try{
-            Order updatedOrder = orderService.createOrder(order);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedOrder);
-        }catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<OrderDto> createOrder(@RequestBody Order order) throws BusinessException {
+            orderService.createOrder(order);
+            return ResponseEntity.ok().build();
     }
+//        try{
+//            Order updatedOrder = orderService.createOrder(order);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(updatedOrder);
+//        }catch(Exception ex){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
     @GetMapping("/")
     public ResponseEntity<List<Order>> getAllOrders(){
@@ -62,7 +71,7 @@ public class OrderController {
     public ResponseEntity<Order> getOrderById(@PathVariable Long id){
         try{
             Order order = orderService.getOrderById(id)
-                    .orElseThrow(() -> new OrderNotFoundException("Order not found with id: " + id));
+                    .orElseThrow(() -> new BusinessException("Order not found with id: " + id));
             return ResponseEntity.ok(order);
         }catch(IllegalArgumentException ex){
             return ResponseEntity.notFound().build();
@@ -78,13 +87,13 @@ public class OrderController {
     }
 
     @GetMapping("/{customer}")
-    public ResponseEntity<List<Order>> getOrderByCustomer(@RequestParam String customer){
-        List<Order> orders = orderService.getOrderByCustomer(customer);
+    public ResponseEntity<List<Order>> getOrderByCustomer(@RequestParam Customer customer){
+        List<Order> orders = orderService.getOrderByCustomer(customer.getEmail());
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<List<Order>> getOrderByDate(@RequestParam Date dateCreated){
+    public ResponseEntity<List<Order>> getOrderByDate(@RequestParam LocalDate dateCreated){
         List<Order> orders = orderService.getOrderByDate(dateCreated);
         return ResponseEntity.ok(orders);
     }
@@ -95,10 +104,10 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/{keyword}")
-    public ResponseEntity<List<Order>> getOrderByKeyword(@RequestParam String keyword){
-        List<Order> orders = orderService.getOrderByKeyword(keyword);
-        return ResponseEntity.ok(orders);
-    }
+//    @GetMapping("/{keyword}")
+//    public ResponseEntity<List<Order>> getOrderByKeyword(@RequestParam String keyword){
+//        List<Order> orders = orderService.getOrderByKeyword(keyword);
+//        return ResponseEntity.ok(orders);
+//    }
 
 }
