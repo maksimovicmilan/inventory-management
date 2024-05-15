@@ -5,10 +5,10 @@ spring:
     password: pass
     driver-class-name: org.postgresql.Driver
 
-    cache:
-      type: caffeine
-    caffeine:
-      spec: maximumSize = 100
+#    cache:
+#      type: caffeine
+#    caffeine:
+#      spec: maximumSize = 100
 
   jpa:
     hibernate:

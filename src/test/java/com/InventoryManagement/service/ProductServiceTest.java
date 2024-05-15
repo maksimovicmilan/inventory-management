@@ -1,6 +1,8 @@
 package com.InventoryManagement.service;
 
 import com.InventoryManagement.entity.Product;
+import com.InventoryManagement.exception.BusinessException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +13,7 @@ import com.InventoryManagement.repository.ProductRepository;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
@@ -25,14 +26,16 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+//    @BeforeEach
+//    public void setUp(){}
+
     @Test
-    void testGetAllProducts(){
-        when(productRepository.findAll()).thenReturn(Collections.singletonList(new Product()));
+    void testGetAllProductsWithEmptyList() throws BusinessException {
+        when(productRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<Product> products = productService.getALlProducts();
-
-        assertFalse(products.isEmpty());
-        assertEquals(1, products.size());
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            productService.getALlProducts();
+    });
+        assertEquals("You don't have any products yet, please create an product first", exception.getMessage());
     }
-
 }

@@ -25,35 +25,23 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<OrderDto> createOrder(@RequestBody Order order) throws BusinessException {
+    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto order) throws BusinessException {
             orderService.createOrder(order);
             return ResponseEntity.ok().build();
     }
-//        try{
-//            Order updatedOrder = orderService.createOrder(order);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(updatedOrder);
-//        }catch(Exception ex){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
 
     @GetMapping("/")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        List<Order> orders = orderService.getAllOrders();
+    public ResponseEntity<List<OrderDto>> getAllOrders() throws BusinessException {
+        List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Order> updateOrder(@PathVariable Long id, @RequestBody Order updatedOrder){
-        try{
-            Order order = orderService.updateOrder(id, updatedOrder);
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable Long id, @RequestBody OrderDto updatedOrder) throws BusinessException{
+            OrderDto order = orderService.updateOrder(id, updatedOrder);
             return ResponseEntity.ok(updatedOrder);
-        }catch (IllegalArgumentException ex){
-            return ResponseEntity.notFound().build();
-        }catch(Exception ex){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Order> deleteOrder(@PathVariable Long id){
@@ -68,9 +56,9 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id){
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) throws BusinessException{
         try{
-            Order order = orderService.getOrderById(id)
+            OrderDto order = orderService.getOrderById(id)
                     .orElseThrow(() -> new BusinessException("Order not found with id: " + id));
             return ResponseEntity.ok(order);
         }catch(IllegalArgumentException ex){
@@ -81,32 +69,32 @@ public class OrderController {
     }
 
     @GetMapping("/{orderNumber}")
-    public ResponseEntity<List<Order>> getOrderByOrderNumber(@RequestParam long orderNumber){
-        List<Order> orders = orderService.getOrderByOrderNumber(orderNumber);
+    public ResponseEntity<List<OrderDto>> getOrderByOrderNumber(@RequestParam long orderNumber){
+        List<OrderDto> orders = orderService.getOrderByOrderNumber(orderNumber);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{customer}")
-    public ResponseEntity<List<Order>> getOrderByCustomer(@RequestParam Customer customer){
-        List<Order> orders = orderService.getOrderByCustomer(customer.getEmail());
+    public ResponseEntity<List<OrderDto>> getOrderByCustomer(@RequestParam Customer customer){
+        List<OrderDto> orders = orderService.getOrderByCustomer(customer.getEmail());
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<List<Order>> getOrderByDate(@RequestParam LocalDate dateCreated){
-        List<Order> orders = orderService.getOrderByDate(dateCreated);
+    public ResponseEntity<List<OrderDto>> getOrderByDate(@RequestParam LocalDate dateCreated){
+        List<OrderDto> orders = orderService.getOrderByDate(dateCreated);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{status}")
-    public ResponseEntity<List<Order>> getOrderByStatus(@RequestParam OrderStatus status){
-        List<Order> orders = orderService.getOrderByStatus(status);
+    public ResponseEntity<List<OrderDto>> getOrderByStatus(@RequestParam OrderStatus status){
+        List<OrderDto> orders = orderService.getOrderByStatus(status);
         return ResponseEntity.ok(orders);
     }
 
 //    @GetMapping("/{keyword}")
-//    public ResponseEntity<List<Order>> getOrderByKeyword(@RequestParam String keyword){
-//        List<Order> orders = orderService.getOrderByKeyword(keyword);
+//    public ResponseEntity<List<OrderDto>> getOrderByKeyword(@RequestParam String keyword){
+//        List<OrderDto> orders = orderService.getOrderByKeyword(keyword);
 //        return ResponseEntity.ok(orders);
 //    }
 

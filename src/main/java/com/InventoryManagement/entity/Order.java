@@ -4,6 +4,7 @@ import com.InventoryManagement.constant.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,11 +28,12 @@ public class Order {
     private long orderNumber;
     @Column(name = "totalPrice")
     private double totalPrice;
-    private String status;
+
+//    private OrderStatus status;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateCreated;
     @ManyToOne(cascade = CascadeType.ALL)
     private Customer customer;
-//    @ManyToOne
-//    private Product product; // todo Set vs List  Collection framework
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Product product;
 }

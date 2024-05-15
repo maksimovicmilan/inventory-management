@@ -16,7 +16,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonIgnore()
 public class OrderDto {
 
     private Long id;
@@ -26,6 +25,6 @@ public class OrderDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateCreated;
     private Customer customer;
-    private Product product; // todo Set vs List  Collection framework
-}
+    private Product product;
 
+}

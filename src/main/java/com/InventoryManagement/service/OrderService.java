@@ -2,21 +2,22 @@ package com.InventoryManagement.service;
 
 import com.InventoryManagement.constant.OrderStatus;
 import com.InventoryManagement.entity.Customer;
+import com.InventoryManagement.entity.dto.CustomerDto;
 import com.InventoryManagement.entity.dto.OrderDto;
 import com.InventoryManagement.exception.ApplicationException;
 import com.InventoryManagement.exception.BusinessException;
 import com.InventoryManagement.repository.CustomerRepository;
 import com.InventoryManagement.repository.OrderRepository;
-import com.InventoryManagement.entity.Order;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Builder
 public class OrderService {
 
     @Autowired
@@ -25,79 +26,97 @@ public class OrderService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public OrderDto createOrder(Order order) throws BusinessException {
+    public OrderDto createOrder(OrderDto order) throws BusinessException {
         try {
             if (order.getCustomer() == null) {
-                throw new BusinessException("Customer Should not be empty");}
-            if (order.getDateCreated().isBefore(LocalDate.now().minusDays(1))) {
-                throw new BusinessException("Can't create an order before one day");}
+                throw new BusinessException("Customer Should not be empty");
+            }
+            if (order.getDateCreated().isBefore(LocalDate.now())) {
+                throw new BusinessException("Date has to be from today");
+            }
             if (order.getTotalPrice() <= 0) {
-                throw new BusinessException("Can't create the order");}
-            Customer customer = new Customer();
+                throw new BusinessException("Total has to be more than '0'");
+            }
+            CustomerDto customer = new CustomerDto();
             customer.setEmail(order.getCustomer().getEmail());
             customer.setFirstName(order.getCustomer().getFirstName());
             customer.setLastName(order.getCustomer().getLastName());
-            customerRepository.saveAndFlush(customer);
-            orderRepository.saveAndFlush(order);
+            customerRepository.saveAndFlush(new CustomerDto());
+            orderRepository.saveAndFlush(new OrderDto());
             OrderDto orderDto = new OrderDto();
             orderDto.setOrderNumber(order.getOrderNumber());
-//            orderDto.setProduct(order.getProduct());
             orderDto.setCustomer(order.getCustomer());
             orderDto.setOrderNumber(order.getOrderNumber());
-//            orderDto.setStatus(order.getStatus());
+            orderDto.setProduct(order.getProduct());
+            orderDto.setStatus(order.getStatus());
             return orderDto;
         } catch (ApplicationException e) {
-             e.fillInStackTrace();
+            e.fillInStackTrace();
         }
         return null;
     }
 
 //    @Cacheable(cacheNames = "orders", key = "#id")
-    public List<Order> getAllOrders(){
-        return orderRepository.findAll();
+    public List<OrderDto> getAllOrders() throws BusinessException{
+        try{
+            List<OrderDto> orders = orderRepository.findAll();
+            if(orders.isEmpty()){
+                throw new BusinessException("You don't have any orders yet, please create an order first");
+            }
+            return orderRepository.findAll();
+        }catch(ApplicationException e){
+            e.fillInStackTrace();
+        }
+        return null;
     }
 
 //    @CachePut(cacheNames = "orders", key = "#id")
-    public Order updateOrder(Long id, Order updatedOrder){
-        if(orderRepository.existsById(id)){
+    public OrderDto updateOrder(Long id, OrderDto updatedOrder) throws BusinessException {
+        try{
+            if(!orderRepository.existsById(id)){
+                throw new BusinessException("Order not found with id: " + id);
+            }
+            if(updatedOrder == null || updatedOrder.getCustomer() == null || updatedOrder.getTotalPrice() <= 0){
+                throw new BusinessException("Invalid order data");
+            }
+            orderRepository.findById(id);
             updatedOrder.setId(id);
             return orderRepository.save(updatedOrder);
-        }else{
-            throw new IllegalArgumentException("Order not found with this id: " + id);
+        } catch (ApplicationException e) {
+            e.fillInStackTrace();
         }
+        return null;
     }
 
 //    @CacheEvict(cacheNames = "orders", key = "#id")
-    public void deleteOrder(Long id){
-        if(orderRepository.existsById(id)){
-            orderRepository.deleteById(id);
-        }else{
-            throw new IllegalArgumentException("Order not found with this id: " + id);
+    public void deleteOrder(Long id) throws BusinessException{
+        try{
+            if(!orderRepository.existsById(id)){
+                throw new BusinessException("Order not found with this id: " + id);
+            }
+             orderRepository.deleteById(id);
+        }catch(ApplicationException e) {
+            e.fillInStackTrace();
         }
     }
 
-    public Optional<Order> getOrderById(Long id){
+    public Optional<OrderDto> getOrderById(Long id){
         return orderRepository.findById(id);
     }
 
-    public List<Order> getOrderByOrderNumber(Long orderNumber){
+    public List<OrderDto> getOrderByOrderNumber(Long orderNumber){
         return orderRepository.findByOrderNumber(orderNumber);
     }
 
-    public List<Order> getOrderByStatus(OrderStatus status){
+    public List<OrderDto> getOrderByStatus(OrderStatus status){
         return orderRepository.findByStatus(status);
     }
 
-    public List<Order> getOrderByCustomer(String customerEmail){
+    public List<OrderDto> getOrderByCustomer(String customerEmail){
         return orderRepository.findByCustomerEmail(customerEmail);
     }
 
-    public List<Order> getOrderByDate(LocalDate dateCreated){
+    public List<OrderDto> getOrderByDate(LocalDate dateCreated){
         return orderRepository.findByDateCreated(dateCreated);
     }
-
-//    public List<Order> getOrderByKeyword(String keyword){
-//        return orderRepository.findByKeyword(keyword);
-//    }
-
 }

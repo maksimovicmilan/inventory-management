@@ -1,17 +1,16 @@
 package com.InventoryManagement.repository;
 
 import com.InventoryManagement.entity.Product;
+import com.InventoryManagement.entity.dto.ProductDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<ProductDto, Long> {
 
-    List<Product> findByFlavour(String flavor);
+    List<ProductDto> findByFlavour(String flavor);
 
-    List<Product> findByPrice(double price);
-
-//    List<Product> findByKeywordContainingIgnoreCase(String keyword);
+    List<ProductDto> findByPrice(double price);
 
 }
