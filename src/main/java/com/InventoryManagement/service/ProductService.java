@@ -23,7 +23,7 @@ public class ProductService {
 
 
 //    @CachePut(cacheNames = "products", key = "#id")
-    public ProductDto createProduct(ProductDto product) throws BusinessException{
+    public Product createProduct(Product product) throws BusinessException{
         try{
             if(product.getName() == null ||product.getName().isEmpty()) {
                 throw new BusinessException("Product name cannot be empty");
@@ -40,9 +40,9 @@ public class ProductService {
     }
 
     //@Cacheable(cacheNames = "products", key = "#id")
-    public List<ProductDto> getALlProducts() throws BusinessException {
+    public List<Product> getALlProducts() throws BusinessException {
         try {
-            List<ProductDto> products = productRepository.findAll();
+            List<Product> products = productRepository.findAll();
             if (products.isEmpty()) {
                 throw new BusinessException("You don't have any products yet, please create an product first");
             }
@@ -54,13 +54,13 @@ public class ProductService {
     }
 
     //@CachePut(cacheNames = "products", key = "#id")
-    public ProductDto updateProduct(Long id, ProductDto updatedProduct) throws BusinessException {
+    public Product updateProduct(Long id, ProductDto updatedProduct) throws BusinessException {
         try {
-            Optional<ProductDto> product = productRepository.findById(id);
+            Optional<Product> product = productRepository.findById(id);
             if(product.isEmpty()){
                 throw new BusinessException("Product not found with id: " + id);
             }
-            ProductDto existingProduct = product.get();
+            Product existingProduct = product.get();
             if(updatedProduct.getName() != null){
                 existingProduct.setName(updatedProduct.getName());
             }
@@ -93,15 +93,15 @@ public class ProductService {
         }
     }
 
-    public Optional<ProductDto> getProductById(Long id){
+    public Optional<Product> getProductById(Long id){
         return productRepository.findById(id);
     }
 
-    public List<ProductDto>getProductsByFlavor(String flavor){
+    public List<Product>getProductsByFlavor(String flavor){
         return productRepository.findByFlavour(flavor);
     }
 
-    public List<ProductDto>getProductByPrice(Double price){
+    public List<Product>getProductByPrice(Double price){
         return productRepository.findByPrice(price);
     }
 

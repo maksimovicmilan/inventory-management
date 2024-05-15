@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<CustomerDto, Long> {
-    List<CustomerDto> findByFirstName(String firstName);
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    List<Customer> findByFirstName(String firstName);
 
 }

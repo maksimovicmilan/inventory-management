@@ -12,15 +12,17 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface OrderRepository extends JpaRepository<OrderDto, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<OrderDto> findByOrderNumber(Long orderNumber);
+    Order findByOrderNumber(Long orderNumber);
 
-    List<OrderDto> findByCustomerEmail(String customer);
+    List<Order> findByCustomerEmail(String customer);
 
-    List<OrderDto> findByDateCreated(LocalDate dateCreated);
+//    List<Order> findByStatus(OrderStatus status);
 
-    List<OrderDto> findByStatus(OrderStatus Status);
+//    List<Order> findByDateCreated(LocalDate dateCreated);
+
+//    List<Order> findByStatus(OrderStatus Status);
 
 //    List<OrderDto> findByKeyword(String Keyword);
 }

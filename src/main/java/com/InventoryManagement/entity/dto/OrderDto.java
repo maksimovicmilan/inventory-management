@@ -17,9 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-
-    private Long id;
-    private long orderNumber;
+    private Long orderNumber;
     private double totalPrice;
     private OrderStatus status;
     @JsonFormat(pattern = "yyyy-MM-dd")

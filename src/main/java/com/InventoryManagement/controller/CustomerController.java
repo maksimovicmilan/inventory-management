@@ -1,6 +1,5 @@
 package com.InventoryManagement.controller;
 
-import com.InventoryManagement.entity.Customer;
 import com.InventoryManagement.entity.dto.CustomerDto;
 import com.InventoryManagement.exception.BusinessException;
 import com.InventoryManagement.service.CustomerService;
@@ -21,7 +20,7 @@ public class CustomerController {
 
     @GetMapping("/")
     public ResponseEntity<List<CustomerDto>> getAllCustomers() throws BusinessException {
-        List<CustomerDto> customers = customerService.getAllOrders();
+        List<CustomerDto> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(customers);
     }
 }
