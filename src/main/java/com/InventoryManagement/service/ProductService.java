@@ -1,13 +1,11 @@
 package com.InventoryManagement.service;
 
-import com.InventoryManagement.entity.dto.ProductDto;
+import com.InventoryManagement.entity.Order;
 import com.InventoryManagement.exception.ApplicationException;
 import com.InventoryManagement.exception.BusinessException;
 import com.InventoryManagement.repository.ProductRepository;
 import com.InventoryManagement.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 //import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,7 @@ public class ProductService {
 
 
 //    @CachePut(cacheNames = "products", key = "#id")
-    public Product createProduct(Product product) throws BusinessException{
+    public ResponseEntity<Product> createProduct(Product product) throws BusinessException{
         try{
             if(product.getName() == null ||product.getName().isEmpty()) {
                 throw new BusinessException("Product name cannot be empty");
@@ -31,22 +29,30 @@ public class ProductService {
             if(product.getPrice() <= 0){
             throw new BusinessException("Price must be greater than 0");
             }
+            Product newProduct = new Product();
+            newProduct.setPrice(product.getPrice());
+            newProduct.setName(product.getName());
+            newProduct.setUnitOfMeasurement(product.getUnitOfMeasurement());
+            newProduct.setEatable(product.getEatable());
+            newProduct.setQuantity(product.getQuantity());
+            newProduct.setFlavour(product.getFlavour());
+            productRepository.saveAndFlush(newProduct);
 
-            return productRepository.save(product);
-        }catch(ApplicationException e){
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (ApplicationException e) {
             e.fillInStackTrace();
         }
         return null;
     }
 
     //@Cacheable(cacheNames = "products", key = "#id")
-    public List<Product> getALlProducts() throws BusinessException {
+    public List<Product> getAllProducts() throws BusinessException {
         try {
             List<Product> products = productRepository.findAll();
             if (products.isEmpty()) {
-                throw new BusinessException("You don't have any products yet, please create an product first");
+                throw new BusinessException("You don't have any products yet, please create a product first");
             }
-            return productRepository.findAll();
+            return products;
         } catch (ApplicationException e) {
             e.fillInStackTrace();
         }
@@ -54,32 +60,26 @@ public class ProductService {
     }
 
     //@CachePut(cacheNames = "products", key = "#id")
-    public Product updateProduct(Long id, ProductDto updatedProduct) throws BusinessException {
-        try {
+    public ResponseEntity<Product> updateProduct(Long id, Product updatedProduct) throws BusinessException {
+        try{
+            if(!productRepository.existsById(id))
+                throw new BusinessException("Order not found with id: " + id);
+
+            if(updatedProduct == null || updatedProduct.getName() == null || updatedProduct.getPrice() <= 0)
+                throw new BusinessException("Invalid order data");
+
             Optional<Product> product = productRepository.findById(id);
-            if(product.isEmpty()){
-                throw new BusinessException("Product not found with id: " + id);
-            }
-            Product existingProduct = product.get();
-            if(updatedProduct.getName() != null){
-                existingProduct.setName(updatedProduct.getName());
-            }
-            if(updatedProduct.getPrice() != 0.0){
-                existingProduct.setPrice(updatedProduct.getPrice());
-            }
-            if(updatedProduct.getFlavour() != null){
-                existingProduct.setFlavour(updatedProduct.getFlavour());
-            }
-            if(updatedProduct.getEatable() != null){
-                existingProduct.setEatable(updatedProduct.getEatable());
-            }
-            if(updatedProduct.getUnitOfMeasurement() != null){
-                existingProduct.setUnitOfMeasurement(updatedProduct.getUnitOfMeasurement());
-            }
-                existingProduct.setQuantity((updatedProduct.getQuantity()));
-            return productRepository.save(existingProduct);
-        } catch (ApplicationException ex) {
-            ex.fillInStackTrace();
+            productRepository.delete(product.get());
+            Product newProduct = new Product();
+            newProduct.setName(updatedProduct.getName());
+            newProduct.setPrice(updatedProduct.getPrice());
+            newProduct.setEatable(updatedProduct.getEatable());
+            newProduct.setFlavour(updatedProduct.getFlavour());
+            newProduct.setQuantity(updatedProduct.getQuantity());
+            productRepository.save(newProduct);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (ApplicationException e) {
+            e.fillInStackTrace();
         }
         return null;
     }
@@ -98,11 +98,13 @@ public class ProductService {
     }
 
     public List<Product>getProductsByFlavor(String flavor){
-        return productRepository.findByFlavour(flavor);
+        List<Product> products = productRepository.findByFlavour(flavor);
+        return products;
     }
 
     public List<Product>getProductByPrice(Double price){
-        return productRepository.findByPrice(price);
+        List<Product> products = productRepository.findByPrice(price);
+        return products;
     }
 
 }

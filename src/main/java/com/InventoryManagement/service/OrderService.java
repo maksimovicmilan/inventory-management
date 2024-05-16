@@ -85,7 +85,6 @@ public class OrderService {
             }
             Optional<Order> order = orderRepository.findById(id);
             orderRepository.delete(order.get());
-
             Order newOrder = new Order();
             newOrder.setTotalPrice(updatedOrder.getTotalPrice());
             newOrder.setOrderNumber(updatedOrder.getOrderNumber());
@@ -93,10 +92,7 @@ public class OrderService {
             newOrder.setProduct(updatedOrder.getProduct());
             newOrder.setCustomer(updatedOrder.getCustomer());
             orderRepository.save(newOrder);
-
-
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-
         } catch (ApplicationException e) {
             e.fillInStackTrace();
         }

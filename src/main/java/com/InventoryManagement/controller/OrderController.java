@@ -29,16 +29,14 @@ public class OrderController {
     @GetMapping("/")
     public List<Order> getAllOrders() throws BusinessException {
         List<Order> orders = orderService.getAllOrders();
-
         return orders;
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<OrderDto> updateOrder(@PathVariable Long id, @RequestBody OrderDto updatedOrder) throws BusinessException{
-             orderService.updateOrder(id, updatedOrder);
-            return ResponseEntity.ok(updatedOrder);
+        orderService.updateOrder(id, updatedOrder);
+        return ResponseEntity.ok(updatedOrder);
     }
-
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Order> deleteOrder(@PathVariable Long id){
@@ -51,19 +49,6 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long id) throws BusinessException{
-//        try{
-//            OrderDto order = orderService.getOrderById(id)
-//                    .orElseThrow(() -> new BusinessException("Order not found with id: " + id));
-//            return ResponseEntity.ok(order);
-//        }catch(IllegalArgumentException ex){
-//            return ResponseEntity.notFound().build();
-//        }catch(Exception ex){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
 
     @GetMapping("/{orderNumber}")
     public OrderDto getOrderByOrderNumber(@RequestParam long orderNumber){
@@ -81,18 +66,5 @@ public class OrderController {
         List<Order> orders = orderService.getOrderByCustomerEmail(customer.getEmail());
         return orders;
     }
-
-//    @GetMapping("/{date}")
-//    public ResponseEntity<List<OrderDto>> getOrderByDate(@RequestParam LocalDate dateCreated){
-//        List<OrderDto> orders = orderService.getOrderByDate(dateCreated);
-//        return ResponseEntity.ok(orders);
-//    }
-
-
-//    @GetMapping("/{keyword}")
-//    public ResponseEntity<List<OrderDto>> getOrderByKeyword(@RequestParam String keyword){
-//        List<OrderDto> orders = orderService.getOrderByKeyword(keyword);
-//        return ResponseEntity.ok(orders);
-//    }
 
 }

@@ -4,6 +4,7 @@ import com.InventoryManagement.entity.Product;
 import com.InventoryManagement.entity.dto.ProductDto;
 import com.InventoryManagement.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.InventoryManagement.service.ProductService;
@@ -18,20 +19,27 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/create")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto product) throws BusinessException {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws BusinessException {
+        productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/")
     public List<Product> getAllProducts() throws BusinessException {
-        List<Product> products = productService.getALlProducts();
+        List<Product> products = productService.getAllProducts();
         return products;
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDto updatedProduct) throws BusinessException {
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) throws BusinessException {
         productService.updateProduct(id, updatedProduct);
         return (ResponseEntity<?>) ResponseEntity.ok();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) throws BusinessException{
+        productService.deleteProduct(id);
+        return(ResponseEntity<?>) ResponseEntity.ok();
     }
 
     @GetMapping("/{price}")
