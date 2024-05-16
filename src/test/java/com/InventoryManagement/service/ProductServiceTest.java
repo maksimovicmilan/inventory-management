@@ -33,6 +33,6 @@ public class ProductServiceTest {
         BusinessException exception = assertThrows(BusinessException.class, () -> {
             productService.getAllProducts();
     });
-        assertEquals("You don't have any products yet, please create an product first", exception.getMessage());
+        assertEquals("You don't have any products yet, please create a product first", exception.getMessage());
     }
 }
